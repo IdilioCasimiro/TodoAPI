@@ -24,12 +24,15 @@ namespace TodoAPI.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(200)]
         public async Task<ActionResult<List<TodoItem>>> Get()
         {
             return await context.Items.ToListAsync();
         }
 
         [HttpGet("{id:int}", Name = "GetItem")]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(200)]
         public async Task<ActionResult<TodoItem>> GetById(int id)
         {
             var item = await context.Items.FindAsync(id);
@@ -40,7 +43,10 @@ namespace TodoAPI.Controllers
             return Ok(item);
         }
 
-        public async Task<IActionResult> Post([FromBody] TodoItem item)
+        [HttpPost]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(201)]
+        public async Task<ActionResult<TodoItem>> Post([FromBody] TodoItem item)
         {
             if (ModelState.IsValid)
             {
@@ -52,6 +58,8 @@ namespace TodoAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> Put(int id, [FromBody] TodoItem item)
         {
             var todo = await context.Items.FindAsync(id);
@@ -66,6 +74,7 @@ namespace TodoAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
         public async Task<IActionResult> Delete(int id)
         {
             var item = await context.Items.FindAsync(id);
